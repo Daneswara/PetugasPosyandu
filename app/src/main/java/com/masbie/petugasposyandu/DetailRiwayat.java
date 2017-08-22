@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DetailRiwayat extends AppCompatActivity {
+    TextView tanggal, umur, berat, tinggi, lingkarKepala, gizi, keterangan;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,13 +39,13 @@ public class DetailRiwayat extends AppCompatActivity {
         SharedPreferences pref = this.getApplicationContext().getSharedPreferences("login", 0);
         final String petugas = pref.getString("nama", "Tidak ada");
         final String id = getIntent().getExtras().getString("id_riwayat");
-        final TextView tanggal = (TextView) findViewById(R.id.tanggal);
-        final TextView umur = (TextView) findViewById(R.id.umur);
-        final TextView berat = (TextView) findViewById(R.id.beratBadan);
-        final TextView tinggi = (TextView) findViewById(R.id.tinggiBadan);
-        final TextView lingkarKepala = (TextView) findViewById(R.id.lingkarKepala);
-        final TextView gizi = (TextView) findViewById(R.id.gizi);
-        final TextView keterangan = (TextView) findViewById(R.id.keterangan);
+        tanggal = (TextView) findViewById(R.id.tanggal);
+        umur = (TextView) findViewById(R.id.umur);
+        berat = (TextView) findViewById(R.id.beratBadan);
+        tinggi = (TextView) findViewById(R.id.tinggiBadan);
+        lingkarKepala = (TextView) findViewById(R.id.lingkarKepala);
+        gizi = (TextView) findViewById(R.id.gizi);
+        keterangan = (TextView) findViewById(R.id.keterangan);
 
         tanggal.setText(getIntent().getExtras().getString("tanggal"));
         umur.setText(getIntent().getExtras().getString("umur"));
@@ -60,9 +61,11 @@ public class DetailRiwayat extends AppCompatActivity {
         simpan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new AttemptSubmit(id, tanggal.getText().toString(), umur.getText().toString(),
-                        berat.getText().toString(), tinggi.getText().toString(), lingkarKepala.getText().toString(),
-                        gizi.getText().toString(), keterangan.getText().toString(), petugas).execute();
+                if(validate()) {
+                    new AttemptSubmit(id, tanggal.getText().toString(), umur.getText().toString(),
+                            berat.getText().toString(), tinggi.getText().toString(), lingkarKepala.getText().toString(),
+                            gizi.getText().toString(), keterangan.getText().toString(), petugas).execute();
+                }
             }
         });
 
@@ -106,6 +109,70 @@ public class DetailRiwayat extends AppCompatActivity {
     }
 
     private ProgressDialog pDialog;
+
+
+    public boolean validate() {
+        boolean valid = true;
+
+        String text_tanggal = tanggal.getText().toString();
+        String text_umur = umur.getText().toString();
+        String text_berat = berat.getText().toString();
+        String text_tinggi = tinggi.getText().toString();
+        String text_lingkarKepala = lingkarKepala.getText().toString();
+        String text_gizi = gizi.getText().toString();
+        String text_keterangan = keterangan.getText().toString();
+
+        if (text_tanggal.isEmpty()) {
+            tanggal.setError("Tanngal harus di isi");
+            valid = false;
+        } else {
+            tanggal.setError(null);
+        }
+
+        if (text_umur.isEmpty()) {
+            umur.setError("Umur ke berapa?");
+            valid = false;
+        } else {
+            umur.setError(null);
+        }
+
+        if (text_berat.isEmpty()) {
+            berat.setError("Berat lahir harus di isi");
+            valid = false;
+        } else {
+            berat.setError(null);
+        }
+
+        if (text_tinggi.isEmpty()) {
+            tinggi.setError("Tinggi harus di isi");
+            valid = false;
+        } else {
+            tinggi.setError(null);
+        }
+
+        if (text_lingkarKepala.isEmpty()) {
+            lingkarKepala.setError("Lingkar Kepala harus di isi");
+            valid = false;
+        } else {
+            lingkarKepala.setError(null);
+        }
+
+        if (text_gizi.isEmpty()) {
+            gizi.setError("Gizi harus di isi");
+            valid = false;
+        } else {
+            gizi.setError(null);
+        }
+        if (text_keterangan.isEmpty()) {
+            keterangan.setError("Keterangan harus di isi");
+            valid = false;
+        } else {
+            keterangan.setError(null);
+        }
+
+        return valid;
+    }
+
 
     class AttemptSubmit extends AsyncTask<String, String, String> {
         /**
@@ -175,7 +242,6 @@ public class DetailRiwayat extends AppCompatActivity {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
-            Toast.makeText(getApplicationContext(), result, Toast.LENGTH_LONG).show();
             pDialog.dismiss();
             if (result != null) {
                 Toast.makeText(DetailRiwayat.this, result, Toast.LENGTH_LONG).show();

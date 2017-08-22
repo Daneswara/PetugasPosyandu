@@ -268,7 +268,6 @@ public class TambahAnak extends AppCompatActivity implements com.wdullaer.materi
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
-            Toast.makeText(getApplicationContext(), result, Toast.LENGTH_LONG).show();
             pDialog.dismiss();
             if (result != null) {
                 Toast.makeText(TambahAnak.this, result, Toast.LENGTH_LONG).show();

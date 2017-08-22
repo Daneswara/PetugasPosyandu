@@ -85,12 +85,15 @@ public class DetailProfilAnak extends AppCompatActivity implements com.wdullaer.
         simpan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int selectedId = JK.getCheckedRadioButtonId();
-                RadioButton input_jeniskelamin = (RadioButton) findViewById(selectedId);
-                new AttemptSubmit(id, textNama.getText().toString(), textTTL.getText().toString(),
-                        textBerat.getText().toString(), textAyah.getText().toString(), textIbu.getText().toString(),
-                        textAlamat.getText().toString(), textTelp.getText().toString(), input_jeniskelamin.getText().toString(),
-                        textAnakke.getText().toString()).execute();
+                if(validate()) {
+                    int selectedId = JK.getCheckedRadioButtonId();
+                    RadioButton input_jeniskelamin = (RadioButton) findViewById(selectedId);
+                    new AttemptSubmit(id, textNama.getText().toString(), textTTL.getText().toString(),
+                            textBerat.getText().toString(), textAyah.getText().toString(), textIbu.getText().toString(),
+                            textAlamat.getText().toString(), textTelp.getText().toString(), input_jeniskelamin.getText().toString(),
+                            textAnakke.getText().toString()).execute();
+
+                }
             }
         });
 
@@ -168,6 +171,76 @@ public class DetailProfilAnak extends AppCompatActivity implements com.wdullaer.
     }
 
     private ProgressDialog pDialog;
+
+    public boolean validate() {
+        boolean valid = true;
+
+        String alamat = textAlamat.getText().toString();
+        String anakke = textAnakke.getText().toString();
+        String ayah = textAyah.getText().toString();
+        String berat = textBerat.getText().toString();
+        String ibu = textIbu.getText().toString();
+        String ttl = textTTL.getText().toString();
+        String nama = textNama.getText().toString();
+        String telp = textTelp.getText().toString();
+
+        if (alamat.isEmpty()) {
+            textAlamat.setError("Alamat harus di isi");
+            valid = false;
+        } else {
+            textAlamat.setError(null);
+        }
+
+        if (anakke.isEmpty()) {
+            textAnakke.setError("Anak ke berapa?");
+            valid = false;
+        } else {
+            textAnakke.setError(null);
+        }
+
+        if (ayah.isEmpty()) {
+            textAyah.setError("Nama Ayah harus di isi");
+            valid = false;
+        } else {
+            textAyah.setError(null);
+        }
+
+        if (berat.isEmpty()) {
+            textBerat.setError("Berat lahir harus di isi");
+            valid = false;
+        } else {
+            textBerat.setError(null);
+        }
+
+        if (ibu.isEmpty()) {
+            textIbu.setError("Nama Ibu harus di isi");
+            valid = false;
+        } else {
+            textIbu.setError(null);
+        }
+
+        if (ttl.isEmpty()) {
+            textTTL.setError("Tanggal lahir harus di isi");
+            valid = false;
+        } else {
+            textTTL.setError(null);
+        }
+        if (nama.isEmpty()) {
+            textNama.setError("Nama anak harus di isi");
+            valid = false;
+        } else {
+            textNama.setError(null);
+        }
+        if (telp.isEmpty()) {
+            textTelp.setError("Isikan nomer telp orang tua dari anak");
+            valid = false;
+        } else {
+            textTelp.setError(null);
+        }
+
+
+        return valid;
+    }
 
     class AttemptSubmit extends AsyncTask<String, String, String> {
         /**

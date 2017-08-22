@@ -54,11 +54,44 @@ public class TambahRiwayat extends AppCompatActivity {
         tambah.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new AttemptSubmit(id, input_berat.getText().toString(), input_tinggi.getText().toString(),
-                        input_lkepala.getText().toString(), input_gizi, petugas).execute();
+                if(validate()) {
+                    new AttemptSubmit(id, input_berat.getText().toString(), input_tinggi.getText().toString(),
+                            input_lkepala.getText().toString(), input_gizi, petugas).execute();
+                }
             }
         });
 
+    }
+
+    public boolean validate() {
+        boolean valid = true;
+
+        String berat = input_berat.getText().toString();
+        String tinggi = input_tinggi.getText().toString();
+        String lkepala = input_lkepala.getText().toString();
+
+        if (berat.isEmpty()) {
+            input_berat.setError("Berat harus di isi");
+            valid = false;
+        } else {
+            input_berat.setError(null);
+        }
+
+        if (tinggi.isEmpty()) {
+            input_tinggi.setError("Tinggi ke berapa?");
+            valid = false;
+        } else {
+            input_tinggi.setError(null);
+        }
+
+        if (lkepala.isEmpty()) {
+            input_lkepala.setError("Lingkar Kepala harus di isi");
+            valid = false;
+        } else {
+            input_lkepala.setError(null);
+        }
+
+        return valid;
     }
 
     class AttemptSubmit extends AsyncTask<String, String, String> {
@@ -126,7 +159,6 @@ public class TambahRiwayat extends AppCompatActivity {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
-            Toast.makeText(getApplicationContext(), result, Toast.LENGTH_LONG).show();
             pDialog.dismiss();
             if (result != null) {
                 Toast.makeText(TambahRiwayat.this, result, Toast.LENGTH_LONG).show();
