@@ -116,6 +116,7 @@ public class Riwayat extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
+        System.out.println("Pause");
 
 //        if(data != null){
 //            tabelbuatan(data, tabel1);
@@ -344,7 +345,7 @@ public class Riwayat extends Fragment {
         requestQueue.add(stringRequest);
     }
 
-    String[][] data = null;
+    String[][] data;
 
     protected void parseJSON(View view, String json) {
         JSONArray users = null;
@@ -391,7 +392,8 @@ public class Riwayat extends Fragment {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        tabel1 = (TableLayout) view.findViewById(R.id.tabelbody);
+        tabel1 = (TableLayout) getView().findViewById(R.id.tabelbody);
+
 
         tabelbuatan(data, tabel1);
         progressDialog.dismiss();
@@ -408,7 +410,7 @@ public class Riwayat extends Fragment {
         //        edit.commit();
     }
 
-    TableLayout tabel1 = null;
+    TableLayout tabel1;
 
     public String formatTanggal(String datetime) throws ParseException {
         SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//dd/MM/yyyy

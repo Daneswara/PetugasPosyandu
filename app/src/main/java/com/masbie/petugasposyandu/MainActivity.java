@@ -22,6 +22,9 @@ public class MainActivity extends AppCompatActivity implements Anak.OnFragmentIn
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if(savedInstanceState != null) {
+            savedInstanceState.remove("android:support:fragments");
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
