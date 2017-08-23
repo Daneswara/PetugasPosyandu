@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -27,9 +28,10 @@ import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
-public class DetailRiwayat extends AppCompatActivity {
+public class DetailRiwayat extends AppCompatActivity implements com.wdullaer.materialdatetimepicker.date.DatePickerDialog.OnDateSetListener{
     TextView tanggal, umur, berat, tinggi, lingkarKepala, gizi, keterangan;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +108,24 @@ public class DetailRiwayat extends AppCompatActivity {
                 }
             }
         });
+
+        tanggal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar now = Calendar.getInstance();
+                com.wdullaer.materialdatetimepicker.date.DatePickerDialog dpd = com.wdullaer.materialdatetimepicker.date.DatePickerDialog.newInstance(
+                        DetailRiwayat.this,
+                        now.get(Calendar.YEAR),
+                        now.get(Calendar.MONTH),
+                        now.get(Calendar.DAY_OF_MONTH)
+                );
+                dpd.setAccentColor(getResources().getColor(R.color.colorPrimary));
+                dpd.setMaxDate(now);
+                dpd.setOkText("Pilih");
+                dpd.setCancelText("Batal");
+                dpd.show(getFragmentManager(), "Datepickerdialog");
+            }
+        });
     }
 
     private ProgressDialog pDialog;
@@ -171,6 +191,12 @@ public class DetailRiwayat extends AppCompatActivity {
         }
 
         return valid;
+    }
+
+    @Override
+    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+        String date = year + "-" + String.format("%02d", (monthOfYear + 1)) + "-" + String.format("%02d", dayOfMonth);
+        tanggal.setText(date);
     }
 
 

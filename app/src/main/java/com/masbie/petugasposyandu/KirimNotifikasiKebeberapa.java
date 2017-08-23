@@ -32,6 +32,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 public class KirimNotifikasiKebeberapa extends AppCompatActivity {
 
     EditText textSMS, textPenerima;
@@ -50,23 +52,64 @@ public class KirimNotifikasiKebeberapa extends AppCompatActivity {
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progressDialog = new ProgressDialog(KirimNotifikasiKebeberapa.this);
-                progressDialog.setIndeterminate(true);
-                progressDialog.setMessage("Proses Pengiriman...");
-                progressDialog.show();
-                String penerima = textPenerima.getText().toString();
-                penerima = penerima.replace(" ", "");
-                penerima = penerima.replace("+62", "0");
-                String split[] = penerima.split(",");
-                for (int i = 0; i < split.length; i++) {
-                    cobaKirim(split[i], textSMS.getText().toString());
-                    new AttemptSubmit(split[i], textSMS.getText().toString(), petugas).execute();
+                if (validate()) {
+                    new SweetAlertDialog(KirimNotifikasiKebeberapa.this, SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText("Apakah anda yakin?")
+                            .setContentText("Anda akan dikenakan biaya sms yang diambil dari pulsa anda")
+                            .setCancelText("Batal")
+                            .setConfirmText("Yakin")
+                            .showCancelButton(true)
+                            .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                @Override
+                                public void onClick(SweetAlertDialog sDialog) {
+                                    sDialog.cancel();
+                                }
+                            })
+                            .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                @Override
+                                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                    String penerima = textPenerima.getText().toString();
+                                    penerima = penerima.replace(" ", "");
+                                    penerima = penerima.replace(".", ",");
+                                    penerima = penerima.replace("+62", "0");
+                                    penerima = penerima.replace("62", "0");
+                                    String split[] = penerima.split(",");
+                                    for (int i = 0; i < split.length; i++) {
+                                        cobaKirim(split[i], textSMS.getText().toString());
+                                        new AttemptSubmit(split[i], textSMS.getText().toString(), petugas).execute();
+                                    }
+                                    sweetAlertDialog.dismiss();
+                                }
+                            })
+                            .show();
                 }
-                progressDialog.dismiss();
             }
         });
 
     }
+
+    public boolean validate() {
+        boolean valid = true;
+
+        String sms = textSMS.getText().toString();
+        String penerima = textPenerima.getText().toString();
+
+        if (sms.isEmpty()) {
+            textSMS.setError("Notifikasi harus di isi");
+            valid = false;
+        } else {
+            textSMS.setError(null);
+        }
+        if (penerima.isEmpty()) {
+            textPenerima.setError("Penerima harus di isi");
+            valid = false;
+        } else {
+            textPenerima.setError(null);
+        }
+
+        return valid;
+    }
+
 
     public void cobaKirim(String phoneNumber, String smsBody) {
         // Get the default instance of SmsManager
@@ -187,9 +230,9 @@ public class KirimNotifikasiKebeberapa extends AppCompatActivity {
             super.onPostExecute(result);
 
 //            Toast.makeText(getApplicationContext(), result, Toast.LENGTH_LONG).show();
-            if (result != null) {
-                Toast.makeText(KirimNotifikasiKebeberapa.this, result, Toast.LENGTH_LONG).show();
-            }
+//            if (result != null) {
+//                Toast.makeText(KirimNotifikasiKebeberapa.this, result, Toast.LENGTH_LONG).show();
+//            }
         }
 
     }

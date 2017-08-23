@@ -33,24 +33,41 @@ public class KirimKeWA extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_kirim_ke_w);
         setTitle("Kirim Notifikasi ke WA");
-        Button send = (Button) findViewById(R.id.buttonSend);
+        final Button send = (Button) findViewById(R.id.buttonSend);
         textSMS = (EditText) findViewById(R.id.editTextSMS);
         SharedPreferences pref = this.getApplicationContext().getSharedPreferences("login", 0);
         final String petugas = pref.getString("nama", "Tidak ada");
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent sendIntent = new Intent("android.intent.action.MAIN");
-                sendIntent.setAction(Intent.ACTION_SEND);
+                if (validate()) {
+                    Intent sendIntent = new Intent("android.intent.action.MAIN");
+                    sendIntent.setAction(Intent.ACTION_SEND);
 //                    sendIntent.setComponent(new ComponentName("com.whatsapp","com.whatsapp.Conversation"));
-                sendIntent.putExtra(Intent.EXTRA_TEXT, textSMS.getText().toString());
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, textSMS.getText().toString());
 //                    sendIntent.putExtra("jid", smsNumber + "@s.whatsapp.net");
-                sendIntent.setType("text/plain");
-                sendIntent.setPackage("com.whatsapp");
-                startActivity(sendIntent);
-                new AttemptSubmit("WA", textSMS.getText().toString(), petugas).execute();
+                    sendIntent.setType("text/plain");
+                    sendIntent.setPackage("com.whatsapp");
+                    startActivity(sendIntent);
+//                new AttemptSubmit("WA", textSMS.getText().toString(), petugas).execute();
+                }
             }
         });
+    }
+
+    public boolean validate() {
+        boolean valid = true;
+
+        String sms = textSMS.getText().toString();
+
+        if (sms.isEmpty()) {
+            textSMS.setError("Notifikasi harus di isi");
+            valid = false;
+        } else {
+            textSMS.setError(null);
+        }
+
+        return valid;
     }
 
     class AttemptSubmit extends AsyncTask<String, String, String> {

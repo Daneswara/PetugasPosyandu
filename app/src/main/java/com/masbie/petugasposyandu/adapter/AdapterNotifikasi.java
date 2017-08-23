@@ -62,13 +62,6 @@ public class AdapterNotifikasi extends BaseAdapter {
             lin.setPadding(20, 8, 8, 8);
             lin.addView(imageView);
             lin.addView(teks);
-            lin.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(mContext, RiwayatAnak.class);
-                    mContext.startActivity(intent);
-                }
-            });
         } else {
             lin = (LinearLayout) convertView;
             imageView = (TextView) lin.getChildAt(0);

@@ -49,15 +49,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 public class sendsms extends AppCompatActivity {
     EditText textSMS;
-    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sendsms);
-        setTitle("Kirim Notifikasi ke Semua");
+        setTitle("Kirim Notifikasi ke Semua Anak");
         Button send = (Button) findViewById(R.id.buttonSend);
         textSMS = (EditText) findViewById(R.id.editTextSMS);
         send.setOnClickListener(new View.OnClickListener() {
@@ -68,16 +69,47 @@ public class sendsms extends AppCompatActivity {
 //                for (int a=0; a < 50; a++) {
 //                    kirimSMS("085730595101", sms);
 //                }
-                progressDialog = new ProgressDialog(sendsms.this);
-                progressDialog.setIndeterminate(true);
-                progressDialog.setMessage("Proses Pengiriman...");
-                progressDialog.show();
-                localAdminList();
+
+                if (validate()) {
+                    new SweetAlertDialog(sendsms.this, SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText("Apakah anda yakin?")
+                            .setContentText("Anda akan dikenakan biaya sms yang diambil dari pulsa anda")
+                            .setCancelText("Batal")
+                            .setConfirmText("Yakin")
+                            .showCancelButton(true)
+                            .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                @Override
+                                public void onClick(SweetAlertDialog sDialog) {
+                                    sDialog.cancel();
+                                }
+                            })
+                            .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                @Override
+                                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                    localAdminList();
+                                    sweetAlertDialog.dismiss();
+                                }
+                            })
+                            .show();
+                }
 
             }
         });
     }
+    public boolean validate() {
+        boolean valid = true;
 
+        String sms = textSMS.getText().toString();
+
+        if (sms.isEmpty()) {
+            textSMS.setError("Notifikasi harus di isi");
+            valid = false;
+        } else {
+            textSMS.setError(null);
+        }
+
+        return valid;
+    }
     public void kirimSMS(String nomer, String pesan) {
         try {
             SmsManager smsManager = SmsManager.getDefault();
@@ -209,7 +241,6 @@ public class sendsms extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        progressDialog.dismiss();
     }
 
     class AttemptSubmit extends AsyncTask<String, String, String> {
@@ -263,11 +294,11 @@ public class sendsms extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-
-//            Toast.makeText(getApplicationContext(), result, Toast.LENGTH_LONG).show();
-            if (result != null) {
-                Toast.makeText(sendsms.this, result, Toast.LENGTH_LONG).show();
-            }
+//
+////            Toast.makeText(getApplicationContext(), result, Toast.LENGTH_LONG).show();
+//            if (result != null) {
+//                Toast.makeText(sendsms.this, result, Toast.LENGTH_LONG).show();
+//            }
         }
 
     }
